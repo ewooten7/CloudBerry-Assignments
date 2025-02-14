@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback Page</title>
+</head>
+<body>
+    <h1>Submit Your Feedback</h1>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p style="color: green;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Feedback Form -->
+    <form method="post">
+        <label for="feedback">Your Feedback:</label>
+        <input type="text" id="feedback" name="feedback" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Display Feedback List -->
+    <h2>Submitted Feedback:</h2>
+    <ul>
+        {% for feedback in feedback_list %}
+            <li>{{ feedback }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
