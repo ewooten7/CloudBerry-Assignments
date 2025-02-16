@@ -382,16 +382,47 @@ print(x)  # Output: 20 (Global x is changed)
 'try-except Blocks'
 #21. Handling Division Errors: Write a function that safely divides two numbers and handles ZeroDivisionError.
 
+'21. Answer'
+def safe_divide(a, b):
+    try:
+        result = a / b  # Attempt division
+        return result
+    except ZeroDivisionError:  # Catch division by zero error
+        return "Error: Cannot divide by zero!"
+
+# Example Usage
+print(safe_divide(10, 2))  # Output: 5.0
+print(safe_divide(5, 0))   # Output: Error: Cannot divide by zero!
+
 
 #22. Handling Type Errors: Fix this program using try-except:
 num = input("Enter a number: ")
 print(num * 2)  # Fix so that it correctly doubles the number
+
+'22. Answer'
+try:
+    num = int(input("Enter a number: "))  # Convert input to integer
+    print(num * 2)  # Correctly doubles the number
+except ValueError:  # Catch invalid input errors (e.g., letters)
+    print("Error: Please enter a valid number!")
 
 #23. Debugging Challenge: This program has a bug. Fix it.
 def add_numbers(a, b):
     return a + c  # There's a mistake here
 print(add_numbers(2, 3))
 
+'23. Answer'
+def add_numbers(a, b):
+    return a + c  # There's a mistake here
+
+print(add_numbers(2, 3))  # NameError: 'c' is not defined
+
+'Fixed Code'
+def add_numbers(a, b):
+    return a + b  # Use 'b' instead of 'c'
+
+# Example Usage
+print(add_numbers(2, 3))  # Output: 5
 
 
 '''🎯 Final Challenge: Mini-Project'''
