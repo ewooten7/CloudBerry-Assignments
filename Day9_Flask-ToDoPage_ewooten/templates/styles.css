@@ -1,27 +1,46 @@
-body > div{
-    border:1px solid grey;
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
 }
-html, body, #container {
-    height:100%;
-    width:100%;
-    margin:0;
-    padding:0;
+
+ul {
+    list-style-type: none;
+    padding: 0;
 }
-#container {
-    overflow:hidden;
-    position:relative;
+
+li {
+    margin: 10px 0;
 }
-#hideMe {
-    -webkit-animation: cssAnimation 5s forwards; 
-    animation: cssAnimation 5s forwards;
+
+.completed {
+    text-decoration: line-through; /* Mark completed tasks with strikethrough */
+    color: grey;
 }
-@keyframes cssAnimation {
-    0%   {opacity: 1;}
-    90%  {opacity: 1;}
-    100% {opacity: 0;}
+
+.clear-btn {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
 }
-@-webkit-keyframes cssAnimation {
-    0%   {opacity: 1;}
-    90%  {opacity: 1;}
-    100% {opacity: 0;}
+
+.clear-btn:hover {
+    background-color: darkred;
+}
+
+/* Flash message styling */
+p.success { color: green; }
+p.danger { color: red; }
+p.warning { color: orange; }
+p.info { color: blue; }
+
+/* Hide messages after 5 seconds */
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+p {
+    animation: fadeOut 5s forwards;
 }
