@@ -25,11 +25,11 @@
 
     <!-- Task list -->
     <ul>
-        {% for index, task in enumerate(tasks) %}
+        {% for task in tasks %}
             <li>
-                <input type="checkbox" onchange="window.location.href='/toggle/{{ index }}'" {% if task.completed %}checked{% endif %}>
+                <input type="checkbox" onchange="window.location.href='/toggle/{{ loop.index0 }}'" {% if task.completed %}checked{% endif %}>
                 <span class="{% if task.completed %}completed{% endif %}">{{ task.task }} (Due: {{ task.due_date }})</span>
-                <a href="/delete/{{ index }}">❌</a>
+                <a href="/delete/{{ loop.index0 }}">❌</a>
             </li>
         {% endfor %}
     </ul>

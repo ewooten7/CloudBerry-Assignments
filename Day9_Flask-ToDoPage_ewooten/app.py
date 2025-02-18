@@ -3,12 +3,12 @@ from flask import Flask, render_template, request, redirect, flash
 app = Flask(__name__)
 app.secret_key = "secret"
 
-# Sample data structure: each task is a dictionary with 'task', 'completed', and 'due_date'
+# Sample task storage: Each task is a dictionary with 'task', 'completed', and 'due_date'
 tasks = []
 
 @app.route('/')
 def home():
-    return render_template('index.html', tasks=tasks)
+    return render_template('index.html', tasks=tasks, enumerate=enumerate)  # Pass enumerate
 
 @app.route('/add', methods=['POST'])
 def add_task():
@@ -25,7 +25,7 @@ def add_task():
 def delete_task(task_id):
     if 0 <= task_id < len(tasks):
         tasks.pop(task_id)
-        flash('Task deleted successfully', 'danger')
+        flash('Task deleted successfully!', 'danger')
 
     return redirect('/')
 
