@@ -1,27 +1,18 @@
-body > div{
-    border:1px solid grey;
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
 }
-html, body, #container {
-    height:100%;
-    width:100%;
-    margin:0;
-    padding:0;
+
+ul {
+    list-style-type: none;
+    padding: 0;
 }
-#container {
-    overflow:hidden;
-    position:relative;
+
+li {
+    margin: 10px 0;
 }
-#hideMe {
-    -webkit-animation: cssAnimation 5s forwards; 
-    animation: cssAnimation 5s forwards;
-}
-@keyframes cssAnimation {
-    0%   {opacity: 1;}
-    90%  {opacity: 1;}
-    100% {opacity: 0;}
-}
-@-webkit-keyframes cssAnimation {
-    0%   {opacity: 1;}
-    90%  {opacity: 1;}
-    100% {opacity: 0;}
-}
+
+p.success { color: green; }
+p.danger { color: red; }
+p.warning { color: orange; }
+p.info { color: blue; }

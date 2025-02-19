@@ -2,23 +2,35 @@
 <html>
 <head>
     <title>To-Do List</title>
+    <script>
+        // NEW FEATURE: Confirm Delete Before Deleting Task
+        function confirmDelete(taskId) {
+            if (confirm("Are you sure you want to delete this task?")) {
+                window.location.href = "/delete/" + taskId;
+            }
+        }
+    </script>
 </head>
 <body>
     <h1>My To-Do List</h1>
+
+    <!-- Form to Add Tasks -->
     <form action="/add" method="post">
         <input type="text" name="task" placeholder="Enter a task" required>
         <button type="submit">Add Task</button>
     </form>
+
+    <!-- Task List -->
     <ul>
         {% for task in tasks %}
-            <li>{{ task }} <a href="/delete/{{ loop.index0 }}">❌</a></li>
+            <li>
+                {{ task['title'] }}
+                <!-- Delete Button with Confirmation -->
+                <a href="javascript:void(0);" onclick="confirmDelete({{ task['id'] }})">❌</a>
+                <!-- NEW FEATURE: Edit Button -->
+                <a href="/edit/{{ task['id'] }}">✏️ Edit</a>
+            </li>
         {% endfor %}
     </ul>
-    <div>
-        <div id='container'>
-            <div id='hideMe'>Task Added successfully</div>
-        </div>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-</div>
 </body>
 </html>
