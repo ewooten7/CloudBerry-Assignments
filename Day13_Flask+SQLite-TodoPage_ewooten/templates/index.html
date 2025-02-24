@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask + SQLAlchemy To-Do App</title>
+</head>
+<body>
+    <h1>To-Do List</h1>
+
+    <!-- 🟢 User Authentication Status -->
+    {% if 'user' in session %}
+        <p>Welcome, {{ session['user'] }}! <a href="/logout">Logout</a></p>
+    {% else %}
+        <p><a href="/login">Login</a> to modify tasks.</p>
+    {% endif %}
+
+    <!-- 🟢 Filtering Options -->
+    <p>Show:
+        <a href="/">All</a> |
+        <a href="/?filter=uncompleted">Uncompleted</a>
+    </p>
+
+    <!-- 🟢 Add New Task (Only If Logged In) -->
+    {% if 'user' in session %}
+        <form action="/add" method="post">
+            <input type="text" name="title" placeholder="Enter a task" required>
+            <button type="submit">Add Task</button>
+        </form>
+    {% endif %}
+
+    <!-- 🟢 Task List -->
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task.title }}
+                [Completed: {{ 'Yes' if task.completed else 'No' }}]
+                {% if 'user' in session %}
+                    <a href="/delete/{{ task.id }}">❌</a>
+                    {% if not task.completed %}
+                        <a href="/complete/{{ task.id }}">✅ Mark Done</a>
+                    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
