@@ -5,14 +5,14 @@ import os
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Required for session-based authentication
 
-# 🟢 Configure SQLite Database
+# Configure SQLite Database
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# 🟢 Task Model
+# Task Model
 class Task(db.Model):
     __tablename__ = 'tasks'
     id = db.Column(db.Integer, primary_key=True)
@@ -22,12 +22,12 @@ class Task(db.Model):
     def __repr__(self):
         return f'<Task {self.title}>'
 
-# 🟢 Create Tables on First Request
-@app.before_first_request
-def create_tables():
+# Create Tables on First Request
+with app.app_context():
     db.create_all()
 
-# 🟢 Home Route - Show All Tasks
+
+# Home Route - Show All Tasks and Total Task Count
 @app.route('/')
 def home():
     filter_option = request.args.get('filter', 'all')  # Get filter option from URL parameter
@@ -35,9 +35,10 @@ def home():
         tasks = Task.query.filter_by(completed=False).all()
     else:
         tasks = Task.query.all()
-    return render_template('index.html', tasks=tasks, filter_option=filter_option)
+    task_count = len(tasks)  # 🔹 New Feature: Count total tasks
+    return render_template('index.html', tasks=tasks, filter_option=filter_option, task_count=task_count)
 
-# 🟢 Add Task Route
+# Add Task Route
 @app.route('/add', methods=['POST'])
 def add_task():
     if 'user' not in session:  # Ensure user is logged in
@@ -49,7 +50,7 @@ def add_task():
     db.session.commit()
     return redirect('/')
 
-# 🟢 Complete Task Route
+# Complete Task Route
 @app.route('/complete/<int:task_id>')
 def complete_task(task_id):
     if 'user' not in session:  # Ensure user is logged in
@@ -60,7 +61,7 @@ def complete_task(task_id):
     db.session.commit()
     return redirect('/')
 
-# 🟢 Delete Task Route
+# Delete Task Route
 @app.route('/delete/<int:task_id>')
 def delete_task(task_id):
     if 'user' not in session:  # Ensure user is logged in
@@ -71,7 +72,20 @@ def delete_task(task_id):
     db.session.commit()
     return redirect('/')
 
-# 🟢 NEW FEATURE: User Authentication (Login & Logout)
+# 🟢 NEW FEATURE: Edit Task Route
+@app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
+def edit_task(task_id):
+    if 'user' not in session:  # Ensure user is logged in
+        return redirect('/login')
+    
+    task = Task.query.get_or_404(task_id)
+    if request.method == 'POST':
+        task.title = request.form['title']  # 🔹 Update task title
+        db.session.commit()
+        return redirect('/')
+    return render_template('edit.html', task=task)
+
+# 🟢 User Authentication (Login & Logout)
 users = {"admin": "password123"}  # Simple hardcoded user credentials
 
 @app.route('/login', methods=['GET', 'POST'])
