@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask To-Do List</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>To-Do List</h1>
+
+        <!-- 🟢 User Authentication Status -->
+        {% if 'user' in session %}
+            <p class="user-info">Welcome, <strong>{{ session['user'] }}</strong>! <a href="/logout" class="logout-btn">Logout</a></p>
+        {% else %}
+            <p class="user-info"><a href="/login" class="login-btn">Login</a> to modify tasks.</p>
+        {% endif %}
+
+        <!-- 🟢 Filtering Options -->
+        <div class="filter-options">
+            <p>Show:
+                <a href="/" class="filter-btn">All</a> |
+                <a href="/?filter=uncompleted" class="filter-btn">Uncompleted</a>
+            </p>
+        </div>
+
+        <!-- 🟢 Add New Task -->
+        {% if 'user' in session %}
+            <form action="/add" method="post" class="task-form">
+                <input type="text" name="title" placeholder="Enter a task" required class="task-input">
+                <button type="submit" class="add-btn">Add Task</button>
+            </form>
+        {% endif %}
+
+        <!-- 🟢 Task List -->
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="task-item {% if task.completed %}completed{% endif %}">
+                    {{ task.title }} 
+                    <span class="status">[{{ '✔ Completed' if task.completed else '❌ Not Done' }}]</span>
+
+                    {% if 'user' in session %}
+                        <a href="/edit/{{ task.id }}" class="edit-btn">✏️ Edit</a>
+                        <a href="/delete/{{ task.id }}" class="delete-btn">🗑 Delete</a>
+                        {% if not task.completed %}
+                            <a href="/complete/{{ task.id }}" class="complete-btn">✅ Mark Done</a>
+                        {% endif %}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>
