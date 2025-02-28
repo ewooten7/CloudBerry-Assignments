@@ -33,11 +33,19 @@ class Task(db.Model):
     def __repr__(self):
         return f'<Task {self.title}>'
 
+# 🟢 User Model for Authentication
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.username}>'
+
 # 🟢 Create Tables on First Request
-# Ensure the database tables are created at the start of the application
 with app.app_context():
     db.create_all()
-
 
 # 🟢 Home Route - Show All Tasks
 @app.route('/')
@@ -48,6 +56,9 @@ def home():
 # 🟢 Add Task Route
 @app.route('/add', methods=['POST'])
 def add_task():
+    if 'user' not in session:
+        return redirect('/login')
+
     title = request.form['title']
     new_task = Task(title=title)
     db.session.add(new_task)
@@ -57,6 +68,9 @@ def add_task():
 # 🟢 Complete Task Route
 @app.route('/complete/<int:task_id>')
 def complete_task(task_id):
+    if 'user' not in session:
+        return redirect('/login')
+
     task = Task.query.get_or_404(task_id)
     task.completed = True
     db.session.commit()
@@ -65,9 +79,33 @@ def complete_task(task_id):
 # 🟢 Delete Task Route
 @app.route('/delete/<int:task_id>')
 def delete_task(task_id):
+    if 'user' not in session:
+        return redirect('/login')
+
     task = Task.query.get_or_404(task_id)
     db.session.delete(task)
     db.session.commit()
+    return redirect('/')
+
+# 🟢 User Authentication (Login & Logout)
+users = {"admin": "password123"}  # Simple hardcoded user credentials
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username in users and users[username] == password:
+            session['user'] = username  # Store user session
+            return redirect('/')
+        else:
+            return "Invalid credentials. Try again."
+
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)  # Remove user session
     return redirect('/')
 
 if __name__ == '__main__':
