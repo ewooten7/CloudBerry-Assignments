@@ -1,22 +1,26 @@
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
+import pymysql  # Ensure PyMySQL is used for MySQL connections
 
+# 🟢 Initialize Flask App
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Required for session-based authentication
 
-# 🔹 Use RDS MySQL instead of SQLite
-DB_USERNAME = "<your_db_username>"
-DB_PASSWORD = "<your_db_password>"
+# 🔹 Use RDS MySQL Instead of SQLite
+DB_USERNAME = "admin"  # Replace with your actual RDS username
+DB_PASSWORD = "password123"  # Replace with your actual RDS password
 DB_ENDPOINT = "my-todoapp-flask-database.cb6yegc2ilb6.us-east-1.rds.amazonaws.com"
 DB_NAME = "todoapp"
 DB_PORT = 3306  # Default MySQL port
 
+# 🔹 Configure Flask SQLAlchemy for MySQL
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_ENDPOINT}:{DB_PORT}/{DB_NAME}"
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# 🔹 Initialize SQLAlchemy
 db = SQLAlchemy(app)
 
 # 🟢 Task Model
@@ -29,9 +33,8 @@ class Task(db.Model):
     def __repr__(self):
         return f'<Task {self.title}>'
 
-# 🟢 Create Tables on First Request
-@app.before_first_request
-def create_tables():
+# 🟢 Create Tables If They Don't Exist
+with app.app_context():
     db.create_all()
 
 # 🟢 Home Route - Show All Tasks
@@ -66,4 +69,4 @@ def delete_task(task_id):
     return redirect('/')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")  # Allows access from any IP
