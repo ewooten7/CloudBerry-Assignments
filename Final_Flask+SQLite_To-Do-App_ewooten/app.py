@@ -71,4 +71,4 @@ def delete_task(task_id):
     return redirect('/')
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")  # Allows access from any IP
+    app.run(host='0.0.0.0', port=5000, debug=True)  # Allows access from any IP
