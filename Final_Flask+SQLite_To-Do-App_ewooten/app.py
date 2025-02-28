@@ -33,9 +33,11 @@ class Task(db.Model):
     def __repr__(self):
         return f'<Task {self.title}>'
 
-# 🟢 Create Tables If They Don't Exist
+# 🟢 Create Tables on First Request
+# Ensure the database tables are created at the start of the application
 with app.app_context():
     db.create_all()
+
 
 # 🟢 Home Route - Show All Tasks
 @app.route('/')
